@@ -62,7 +62,7 @@ if __name__ == '__main__':
                         type=str,
                         required=False,
                         default='./data/aishell3/',
-                        help='aishell3 root folder')
+                        help='aishell3 data folder')
 
     parser.add_argument('-n',
                         '--n_files_per_speaker',
@@ -111,6 +111,3 @@ if __name__ == '__main__':
         pickle.dump(spk2feats, fp)
 
     test(spk2feats)
-
-    # signal, fs =torchaudio.load('samples/audio_samples/example1.wav')
-    # embeddings = classifier.encode_batch(signal)
