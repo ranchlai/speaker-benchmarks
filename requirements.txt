@@ -1,0 +1,3 @@
+speechbrain==0.5.11
+librosa==0.8.1
+jupyter-bokeh==3.0.0
