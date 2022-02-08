@@ -1,4 +1,4 @@
-# Testing SOTA open-source Voxceleb speaker model on Aishell-3
+# Testing SOTA open-source Voxceleb speaker models on Aishell-3
 
 ## Install requirements
 ``` bash
