@@ -7,9 +7,9 @@ import librosa
 import numpy as np
 import torch
 import tqdm
-from speechbrain.pretrained import EncoderClassifier
 
 from metrics import compute_eer
+from speaker_model import SpeakerSB, SpeakerSV  # noqa
 
 
 def test(spk2feats):
@@ -79,8 +79,7 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    classifier = EncoderClassifier.from_hparams(
-        source="speechbrain/spkrec-ecapa-voxceleb")
+    model = SpeakerSV()
 
     wav_files = glob.glob(f'{args.folder}/wavs/*.wav')
     wav_files.sort()
@@ -98,16 +97,16 @@ if __name__ == '__main__':
 
     spk2feats = {s: [] for s in spk_set}
     for spk in tqdm.tqdm(spk_set):
-        for file in tqdm.tqdm(spk2files[spk][:2]):
+        for file in tqdm.tqdm(spk2files[spk][:args.n_files_per_speaker]):
             signal, fs = librosa.load(file,
                                       sr=16000,
                                       duration=3,
                                       res_type='kaiser_fast')
             signal = torch.tensor(signal[:16000 * 3])[None, :].to(args.device)
-            feat = classifier.encode_batch(signal)
-            spk2feats[spk] += [feat.cpu().numpy()[0, :, :]]
+            feat = model(signal)
+            spk2feats[spk] += [feat.cpu().numpy()]
 
-    with open('spk2feats.pkl', 'wb') as fp:
+    with open('spk2feats_sv.pkl', 'wb') as fp:
         pickle.dump(spk2feats, fp)
 
     test(spk2feats)
