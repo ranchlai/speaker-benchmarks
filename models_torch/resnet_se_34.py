@@ -6,7 +6,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torchaudio
 
-from .resnet_blocks import ResNetSE, SEBasicBlock  # noqa
+from .resnet_blocks import SEBasicBlock  # noqa
 
 
 class ResNetSE34(nn.Module):
@@ -151,11 +151,3 @@ class ResNetSE34(nn.Module):
         x = self.fc(x)
 
         return x
-
-
-def MainModel(nOut=256, **kwargs):
-    # Number of filters
-    num_filters = [16, 32, 64, 128]
-    model = ResNetSE(  # noqa
-        SEBasicBlock, [3, 4, 6, 3], num_filters, nOut, **kwargs)
-    return model
