@@ -17,8 +17,8 @@ python main.py -f <aishell3-folder> -d cuda -n 32
 ![vis](./vis.png)
 
 
-## results
-|  duration  | ResnetSE    | ECAPA-TDNN  |
+## Results
+|  Duration  | ResnetSE    | ECAPA-TDNN  |
 | -- | ----------- | ----------- |
 | 2s | 0.098486029 | 0.074040102 |
 | 3s | 0.084023627 | 0.059502252 |
