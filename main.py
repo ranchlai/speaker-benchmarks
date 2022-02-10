@@ -70,6 +70,18 @@ if __name__ == '__main__':
                         required=False,
                         default=32)
 
+    parser.add_argument('-s', '--seed', type=int, required=False, default=100)
+    parser.add_argument('-m',
+                        '--model',
+                        type=str,
+                        required=False,
+                        default='SpeakerSB')
+    parser.add_argument('-u',
+                        '--duration',
+                        type=int,
+                        required=False,
+                        default=3)
+
     parser.add_argument(
         '-d',
         '--device',
@@ -79,7 +91,11 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    model = SpeakerSV()
+    np.random.seed(args.seed)
+    random.seed(args.seed)
+
+    print(f'Using model {args.model}')
+    model = eval(args.model)()
 
     wav_files = glob.glob(f'{args.folder}/wavs/*.wav')
     wav_files.sort()
@@ -100,13 +116,14 @@ if __name__ == '__main__':
         for file in tqdm.tqdm(spk2files[spk][:args.n_files_per_speaker]):
             signal, fs = librosa.load(file,
                                       sr=16000,
-                                      duration=3,
+                                      duration=args.duration,
                                       res_type='kaiser_fast')
-            signal = torch.tensor(signal[:16000 * 3])[None, :].to(args.device)
+            signal = torch.tensor(signal[:16000 * args.duration])[None, :].to(
+                args.device)
             feat = model(signal)
             spk2feats[spk] += [feat.cpu().numpy()]
 
-    with open('spk2feats_sv.pkl', 'wb') as fp:
+    with open(f'spk2feats_{args.model}.pkl', 'wb') as fp:
         pickle.dump(spk2feats, fp)
 
     test(spk2feats)
